@@ -41,11 +41,15 @@ SSD1306 OLED 0.96寸
 
 ## 软件
 
-Arduino
+-Arduino
 
-WebSocket
+-C/C++
 
-QwenAPI
+-VScode
+
+-WebSocket
+
+-QwenAPI
 
 ---
 
