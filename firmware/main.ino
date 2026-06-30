@@ -38,8 +38,8 @@
 
 
 /* ---------------- WiFi CONFIG ---------------- */
-const char* WIFI_SSID = "好东西";
-const char* WIFI_PASS = "yi dao ba";
+const char* WIFI_SSID = "your_WIFI_SSID";
+const char* WIFI_PASS = "your_WIFI_PASS";
 
 
 /* --------------- WebSocket SERVER ------------ */
