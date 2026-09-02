@@ -15,8 +15,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fonts_resource.h"
+// wifi信息回显
+#include "esp_wifi.h"
+#include "esp_event.h"
+#include "esp_netif.h"
 
-// 测试用
+//测试用
 // #include "esp_log.h"
 // static const char *TAG = "graphics层";
 
@@ -32,7 +36,7 @@ extern const uint16_t unicode_list_5[];
 #define CMAPS_COUNT 6
 
 // 欢迎词
-const char *Welcome = "Hello World!";
+const char *Welcome = "屏幕开机测试!";
     
 
 void ssd1306_graphics_clear(ssd1306_t *dev, uint8_t color){
@@ -212,7 +216,7 @@ uint8_t draw_char(ssd1306_t *dev, uint32_t unicode, int16_t x, int16_t y) {
                 ssd1306_draw_pixel(dev, x + col  + d->ofs_x - 1  , y + row + d->ofs_y + 2, OLED_COLOR_WHITE);
         }
     }
-    return d->box_w;
+    return d->box_w; // 返回字符宽
 }
 
 // 打印字符串主要处理光标移动，然后循环调用draw_char()
@@ -258,16 +262,72 @@ void draw_string(ssd1306_t *dev,const char* str, int16_t x, int16_t y) {
     }
 }
 
-esp_err_t ssd1306_init(ssd1306_t *dev,uint8_t device_address,i2c_master_bus_handle_t bus_handle){
-    // driver层初始化
-    esp_err_t net = ssd1306_driver_init(dev,device_address,bus_handle);
-    
-    // 清屏
-    ssd1306_clear(dev,0x00);
-    draw_string(dev,Welcome,0,0);
-    return net;
-}
 
 void graphics_update(ssd1306_t *dev){
     ssd1306_flush(dev);
+}
+
+// wifi信息回显 事件监听
+static void wifi_info_show_handler(void* event_handler_arg,
+                        esp_event_base_t event_base,
+                        int32_t event_id,
+                        void* event_data){
+    // 传入播放设备句柄
+    ssd1306_t* dev = (ssd1306_t*) event_handler_arg;
+    ssd1306_clear(dev,0x00); // 清屏处理
+    if( event_base == WIFI_EVENT ){
+        switch (event_id){
+        case WIFI_EVENT_STA_CONNECTED:
+            draw_string(dev,"Wi-Fi成功连接!",0,0);
+            graphics_update(dev);
+            break;
+        case WIFI_EVENT_STA_DISCONNECTED:
+            draw_string(dev,"Wi-Fi断开,正在尝试重连...",0,0); 
+            graphics_update(dev);
+            esp_wifi_connect();
+            break;
+        case WIFI_EVENT_STA_AUTHMODE_CHANGE:
+            draw_string(dev,"Wi-Fi认证模式改变!",0,0); 
+            graphics_update(dev);
+            break;
+        default:
+            break;
+        }
+    }
+    else if(event_base == IP_EVENT){
+        switch (event_id){
+        case IP_EVENT_STA_GOT_IP:{
+            ip_event_got_ip_t* netif_data = (ip_event_got_ip_t*) event_data;
+            char ip_addr[16] = {0};
+            esp_ip4addr_ntoa(&netif_data->ip_info.ip,ip_addr,sizeof(ip_addr));
+            char oled_buf[32] = {0};
+            // 直接将前缀 "IP:" 和转换后的 ip_str 拼在一起
+            snprintf(oled_buf, sizeof(oled_buf), "IP: %s", ip_addr);
+
+            ssd1306_clear(dev,0x00);// 清屏处理
+            draw_string(dev,oled_buf,0,0); // 在(0,0)处打印
+            graphics_update(dev);
+            break;
+        }
+        default:
+            break;
+        }
+    }    
+    vTaskDelay(pdMS_TO_TICKS(1500)); // 延迟，显示
+}
+
+void ssd1306_init(ssd1306_t *dev,uint8_t device_address,i2c_master_bus_handle_t bus_handle){
+    // driver层初始化
+    ESP_ERROR_CHECK(ssd1306_driver_init(dev,device_address,bus_handle));
+    // 清屏,并显示欢迎词
+    ssd1306_clear(dev,0x00);
+    draw_string(dev,Welcome,0,0);
+    graphics_update(dev);
+    vTaskDelay(pdMS_TO_TICKS(1500)); // 延迟，显示下欢迎词
+
+
+    // 注册wifi信息回显事件监听 wifi_info_show_handler
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,ESP_EVENT_ANY_ID,&wifi_info_show_handler,dev,NULL));
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,ESP_EVENT_ANY_ID,&wifi_info_show_handler,dev,NULL));
+
 }

@@ -24,7 +24,7 @@
  * @param bus_handle 总线句柄
  * @return esp_err_t 
  */
-esp_err_t ssd1306_init(ssd1306_t *dev,uint8_t device_address,i2c_master_bus_handle_t bus_handle);
+void ssd1306_init(ssd1306_t *dev,uint8_t device_address,i2c_master_bus_handle_t bus_handle);
 
 /**
  * @brief 清空 SSD1306 OLED 显示器屏幕内容

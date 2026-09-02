@@ -26,20 +26,30 @@
 // 声明总线 句柄
 extern i2c_master_bus_handle_t bus_handle;
 
-
 /**
+ * @brief 初始化以下所有板载资源，直接在main中调试用
+ * 
+ */
+ void board_Init();
+
+ /**
  * @brief 初始化I2C
+  * 
+  */
+ void I2C_Init();
+
+/**
+ * @brief 初始化UART
  * 
- * @param bus_handle I2C总线句柄
  */
- void Init_I2C();
+void UART_Init();
 
 
 /**
- * @brief 初始化以上所有板载资源，直接在main中调试用
+ * @brief nvs分区初始化
  * 
- * @param I2C_bus_handle I2C总线句柄
+ * @return esp_err_t 
  */
- void Init_board();
+esp_err_t nvs_Init();
 
 #endif

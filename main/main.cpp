@@ -1,13 +1,14 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
-#include "BSP.h"
 #include "esp_log.h"
-#include "Hardware_Pin.h"
 
+#include "esp_event.h"
 #include "App_tasks.h"
 
+#include "BSP.h"
+#include "Hardware_Pin.h"
+#include "Wifi.h"
 
 
 // 该板配置 tick_Hz = 1KHz 有 1 tick = 1 ms
@@ -58,10 +59,24 @@
 static const char *TAG = "MAIN";
 
 static esp_err_t init_system_resources(void){
+  esp_err_t ret = ESP_OK;
+
+  // 打开事件循环
+  ret = esp_event_loop_create_default();
   //初始化板载资源
-	Init_board();
-	return ESP_OK;
+	board_Init();
+  // 初始化wifi，并执行连接逻辑
+  wifi_Init();
+
+  // dpp_enrollee_init();
+
+	return ret;
+
+
+
 }
+
+
 
 extern "C" void app_main(void)
 {

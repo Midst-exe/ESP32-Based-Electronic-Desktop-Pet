@@ -64,13 +64,15 @@ void UART_Transmit_task(void *arg){
 
 	// 初始化内容
     ssd1306_t Oled_0;
-	ESP_ERROR_CHECK(ssd1306_init(&Oled_0,OLED_ADDR_3D_91,bus_handle));
+	ssd1306_init(&Oled_0,OLED_ADDR_3D_91,bus_handle);
+    
 
-	// oled_test();
-    // 开机亮屏显示
-	ssd1306_graphics_clear(&Oled_0, 0xff);
-    ssd1306_flush(&Oled_0); // 推送上屏
-    vTaskDelay(pdMS_TO_TICKS(3000));
+	// // oled_test();
+    // // 开机亮屏显示
+	// ssd1306_graphics_clear(&Oled_0, 0xff);
+    // graphics_update(&Oled_0); // 推送上屏
+    // vTaskDelay(pdMS_TO_TICKS(3000));
+    // ssd1306_clear(&Oled_0,0x00);  //提前清屏
 	
 
     while (1)

@@ -57,8 +57,6 @@ void Expressions_task(void *arg)
 {
   	ESP_LOGI(TAG, "Task Start");
 
-	// 初始化I2C总线
-    Init_I2C();
 	// 创建 ssd1306_t 类型句柄 与 设备物理地址绑定OLED_ADDR_3D_96、配置初始化等
 	ssd1306_t Oled_0;
 	ssd1306_init(&Oled_0,OLED_ADDR_3D_96,bus_handle);
