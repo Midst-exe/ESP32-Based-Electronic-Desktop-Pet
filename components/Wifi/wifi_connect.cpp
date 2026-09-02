@@ -119,6 +119,8 @@ static void wifi_handler(void* event_handler_arg,
             ip_event_got_ip_t* netif_data = (ip_event_got_ip_t*) event_data;
             //IPSTR配置好的宏，同时用IP2STR解析，转为点分十进制
             ESP_LOGI(TAG,"ip_addr: " IPSTR,IP2STR(&netif_data->ip_info.ip)); 
+            // 写入全局ip
+            snprintf(ipv4_addr, sizeof(ipv4_addr), IPSTR, IP2STR(&netif_data->ip_info.ip));
             // 修改配网状态：连接成功
             g_wifi_config_status = WIFI_CONFIG_GET_IP;
             reconnect_times = 0; // 修改重连次数

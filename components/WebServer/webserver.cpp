@@ -209,10 +209,19 @@ esp_err_t AP_get_uri_handler(httpd_req_t* req){
     snprintf(
         response,
         sizeof(response),
-        "{\"status\":\"%s\"}",  // "status":"....."
+        "{\"status\":\"%s\"}",  // {"status":"....."}
         status_str
     );
-    ESP_LOGI(TAG,"Web_Server  已发送:%s",status_str);
+    // 如果获取到IP，则追加ip地址
+    if(g_wifi_config_status == WIFI_CONFIG_GET_IP)
+        snprintf(
+        response + strlen(response) - 1,// 起始地址加偏移量
+        sizeof(response) - strlen(response), // 全部的地址空间
+        ",\"ip\":\"%s\"}",  // 去掉之前的"}    加上  ,ip":"....."
+        ipv4_addr
+        );
+
+    ESP_LOGI(TAG,"Web_Server  已发送:%s",response);
 
     return httpd_resp_send(
         req,

@@ -13,3 +13,6 @@ wifi_config_status_t g_wifi_config_status = WIFI_CONFIG_IDLE;
 // 普通全局变量
 // 初始化网络状态为：未连接
 wifi_status_t g_wif_status = WIFI_OFF;
+
+// 全局IP地址 初始化为空  0.0.0.0
+char ipv4_addr[16] = {0};

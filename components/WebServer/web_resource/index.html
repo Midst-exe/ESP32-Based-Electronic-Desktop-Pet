@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>设备配网</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>LTF_exe设备配网</title>
   <style>
     * {
       margin: 0;
@@ -13,178 +13,428 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0d1735 0%, #172653 45%, #29184b 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
+      position: relative;
     }
 
     .container {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 2;
       width: 100%;
-      max-width: 380px;          /* 手机更友好的宽度 */
+      max-width: 390px;
+      background: rgba(255, 255, 255, .97);
+      border-radius: 22px;
       overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, .38), 0 0 50px rgba(80, 110, 255, .16);
+      animation: cardIn .7s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(35px) scale(.94);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .header {
-      background: #4a6cf7;
-      color: white;
-      padding: 20px 16px;
+      position: relative;
+      background: linear-gradient(135deg, #4268f5, #6556e8, #824bd1);
+      color: #fff;
+      padding: 25px 18px 23px;
       text-align: center;
+      overflow: hidden;
+    }
+
+    .header:before {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .11);
+      right: -75px;
+      top: -115px;
+      animation: headerFloat 6s ease-in-out infinite alternate;
+    }
+
+    .header:after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 50%;
+      left: -50px;
+      bottom: -70px;
+      animation: ringRotate 8s linear infinite;
+    }
+
+    @keyframes headerFloat {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-30px, 30px) scale(1.15); }
+    }
+
+    @keyframes ringRotate {
+      from { transform: rotate(0) scale(1); }
+      to { transform: rotate(360deg) scale(1.2); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .device-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .13);
+      border: 1px solid rgba(255, 255, 255, .16);
+      font-size: 11px;
+      margin-bottom: 9px;
+      backdrop-filter: blur(5px);
+    }
+
+    /* 状态指示灯样式与动画 */
+    .indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      transition: background-color .3s;
+    }
+
+    .indicator-dot.standby {
+      background: #ffc107;
+      animation: pulseYellow 2s infinite;
+    }
+
+    .indicator-dot.connecting {
+      background: #00d2ff;
+      animation: pulseBlue .8s infinite;
+    }
+
+    .indicator-dot.success {
+      background: #78ffae;
+      box-shadow: 0 0 6px #78ffae;
+    }
+
+    .indicator-dot.error {
+      background: #ff5252;
+      animation: pulseRed .6s infinite;
+    }
+
+    @keyframes pulseYellow {
+      0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, .7); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 193, 7, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+    }
+
+    @keyframes pulseBlue {
+      0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, .8); }
+      70% { box-shadow: 0 0 0 8px rgba(0, 210, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
+    }
+
+    @keyframes pulseRed {
+      0% { box-shadow: 0 0 0 0 rgba(255, 82, 82, .8); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 82, 82, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
     }
 
     .header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 20px;
+      font-weight: 650;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, .2);
     }
 
     .header p {
       font-size: 12px;
-      opacity: 0.9;
+      opacity: .9;
+      letter-spacing: 1px;
     }
 
     .content {
-      padding: 20px 16px 16px;
+      padding: 22px 18px 18px;
     }
 
     .info-box {
-      background: #f0f4ff;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 20px;
+      position: relative;
+      background: linear-gradient(135deg, #f0f4ff, #f8f2ff);
+      border-radius: 12px;
+      padding: 14px 15px;
+      margin-bottom: 22px;
       font-size: 13px;
-      color: #333;
-      line-height: 1.5;
+      color: #444;
+      line-height: 1.65;
+      border: 1px solid rgba(74, 108, 247, .08);
+      overflow: hidden;
+    }
+
+    .info-box:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #4a6cf7, #8755e8);
+      border-radius: 4px;
     }
 
     .info-box strong {
       color: #4a6cf7;
+      font-weight: 650;
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 17px;
+      animation: formIn .5s ease backwards;
+    }
+
+    .form-group:nth-child(1) { animation-delay: .15s; }
+    .form-group:nth-child(2) { animation-delay: .25s; }
+
+    @keyframes formIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .form-group label {
       display: block;
       font-size: 13px;
       color: #555;
-      margin-bottom: 6px;
-      font-weight: 500;
+      margin-bottom: 7px;
+      font-weight: 550;
     }
 
     .form-group input {
       width: 100%;
-      height: 46px;               /* 更大的点击区域，适合手机 */
+      height: 47px;
       padding: 0 14px;
-      border: 1px solid #dcdfe6;
-      border-radius: 8px;
+      border: 1px solid #dfe3ec;
+      border-radius: 10px;
       font-size: 15px;
       outline: none;
-      transition: border-color 0.2s;
       background: #fff;
+      color: #333;
+      transition: border-color .25s, box-shadow .25s, transform .2s;
+    }
+
+    .form-group input::placeholder {
+      color: #b2b6c0;
     }
 
     .form-group input:focus {
       border-color: #4a6cf7;
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, .1), 0 5px 15px rgba(74, 108, 247, .08);
+      transform: translateY(-1px);
     }
 
-    /* 密码框 + 显示密码按钮 */
     .password-wrapper {
       position: relative;
     }
 
     .password-wrapper input {
-      padding-right: 70px;
+      padding-right: 72px;
     }
 
     .toggle-pwd {
       position: absolute;
-      right: 8px;
+      right: 7px;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
+      background: transparent;
+      border: 0;
       color: #4a6cf7;
       font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       padding: 8px 10px;
-      border-radius: 6px;
+      border-radius: 7px;
+      transition: .2s;
     }
 
-    .toggle-pwd:active {
+    .toggle-pwd:hover {
       background: #f0f4ff;
     }
 
+    .toggle-pwd:active {
+      transform: translateY(-50%) scale(.92);
+    }
+
+    /* 呼吸灯背光按钮 */
     .btn {
+      position: relative;
       width: 100%;
-      height: 48px;               /* 手机友好的按钮高度 */
-      background: #4a6cf7;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      height: 49px;
+      margin-top: 7px;
+      background: linear-gradient(135deg, #4a6cf7, #6758f5);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
+      overflow: visible;
+      transition: .2s;
+      animation: btnGlow 3s ease-in-out infinite;
     }
 
-    .btn:active {
-      background: #3b5bdb;
+    @keyframes btnGlow {
+      0%, 100% {
+        box-shadow: 0 5px 15px rgba(74, 108, 247, .3), 0 0 10px rgba(103, 88, 245, .2);
+      }
+      50% {
+        box-shadow: 0 8px 25px rgba(74, 108, 247, .6), 0 0 22px rgba(103, 88, 245, .6);
+      }
+    }
+
+    .btn:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 70%;
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -100%; }
+      35% { left: 130%; }
+      100% { left: 130%; }
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px) scale(.99);
     }
 
     .btn:disabled {
-      background: #a0aec0;
+      background: linear-gradient(135deg, #9ea8ba, #8f9bad);
+      box-shadow: none;
       cursor: not-allowed;
+      animation: none;
     }
 
     .status {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 8px;
+      margin-top: 17px;
+      padding: 13px 12px;
+      border-radius: 10px;
       font-size: 13px;
+      line-height: 1.5;
       text-align: center;
       display: none;
+      animation: statusIn .3s ease;
+    }
+
+    @keyframes statusIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .status.success {
-      background: #e6fffa;
-      color: #234e52;
+      background: #e9fff8;
+      color: #246158;
+      border: 1px solid #c9f5e9;
       display: block;
     }
 
     .status.error {
-      background: #fff5f5;
+      background: #fff4f4;
       color: #c53030;
+      border: 1px solid #ffdada;
       display: block;
     }
 
     .status.loading {
-      background: #ebf8ff;
+      background: #edf7ff;
       color: #2b6cb0;
+      border: 1px solid #d8edff;
       display: block;
+      animation: statusIn .3s ease, loadingPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes loadingPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .65; }
     }
 
     .footer {
       text-align: center;
-      padding: 12px 16px 16px;
-      font-size: 12px;
-      color: #999;
+      padding: 13px 16px 18px;
+      font-size: 11px;
+      color: #a5a9b3;
+      letter-spacing: .5px;
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 14px; }
+      .container { border-radius: 20px; }
+      .header { padding: 23px 16px 21px; }
+      .content { padding: 20px 16px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
+
 <body>
+
   <div class="container">
     <div class="header">
-      <h1>LTF_exe设备配网</h1>
-      <p>尝试开启新生活</p>
+      <div class="header-content">
+        <div class="device-indicator">
+          <span class="indicator-dot standby" id="indicatorDot"></span>
+          <span id="indicatorText">待配网</span>
+        </div>
+        <h1>LTF_exe设备配网</h1>
+        <p>尝试开启新生活</p>
+      </div>
     </div>
 
     <div class="content">
@@ -194,13 +444,11 @@
       </div>
 
       <form id="configForm">
-        <!-- SSID 输入框 -->
         <div class="form-group">
           <label for="ssid">WiFi 名称 (SSID)</label>
           <input type="text" id="ssid" placeholder="请输入 WiFi 名称" maxlength="32" autocomplete="off">
         </div>
 
-        <!-- 密码输入框 + 显示密码 -->
         <div class="form-group">
           <label for="password">WiFi 密码</label>
           <div class="password-wrapper">
@@ -215,12 +463,29 @@
       <div class="status" id="status"></div>
     </div>
 
-    <div class="footer">
-      LTF_exe探索版
-    </div>
+    <div class="footer">LTF_exe探索版</div>
   </div>
 
   <script>
+    /* =========================================================
+       指示灯 UI 状态更新辅助函数
+       ========================================================= */
+
+    const indicatorDot = document.getElementById('indicatorDot');
+    const indicatorText = document.getElementById('indicatorText');
+
+    function updateIndicator(state, text) {
+      if (indicatorDot && indicatorText) {
+        indicatorDot.className = 'indicator-dot ' + state;
+        indicatorText.textContent = text;
+      }
+    }
+
+
+    /* =========================================================
+       WiFi 配网逻辑
+       ========================================================= */
+
     const ssidInput = document.getElementById('ssid');
     const passwordInput = document.getElementById('password');
     const togglePwd = document.getElementById('togglePwd');
@@ -228,12 +493,11 @@
     const statusEl = document.getElementById('status');
     const submitBtn = document.getElementById('submitBtn');
 
-    // 轮询控制变量
     let pollTimer = null;
-    const POLL_INTERVAL = 2000; // 轮询间隔：2秒
+    const POLL_INTERVAL = 2000;
 
-    // 显示 / 隐藏密码
-    togglePwd.addEventListener('click', function () {
+    /* 显示 / 隐藏密码 */
+    togglePwd.addEventListener('click', function() {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         this.textContent = '隐藏';
@@ -243,73 +507,66 @@
       }
     });
 
-    // ****************** 轮询配网状态逻辑 *******************
-
-    /**
-     * 1. 轮询向 AP_get_uri 获取配网状态
-     */
+    /* 查询 WiFi 状态 */
     function pollWifiStatus() {
-      // 替换为你的 AP_get_uri 实际路由路径，例如 '/api/wifi-status'
-      fetch('/wifi_status', { cache: 'no-cache' })
-        .then(res => {
-          if (!res.ok) {
-            throw new Error('HTTP status ' + res.status);
-          }
-          return res.json();
-        })
-        .then(data => {
-          parseAppStatus(data);
-        })
-        .catch(err => {
-          console.error("获取配网状态失败:", err);
-          // 注意：配网成功切断 AP 时可能会引发网络错误，这里可根据需要保持轮询或提示
-          if (pollTimer) {
-            pollTimer = setTimeout(pollWifiStatus, POLL_INTERVAL);
-          }
-        });
+      fetch('/wifi_status', {
+        cache: 'no-cache'
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('HTTP status ' + res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
+        parseAppStatus(data);
+      })
+      .catch(err => {
+        console.error("获取配网状态失败:", err);
+        if (pollTimer) {
+          pollTimer = setTimeout(pollWifiStatus, POLL_INTERVAL);
+        }
+      });
     }
 
-    /**
-     * 2. 解析 AP_get_uri 返回的 status 并更新UI
-     */
+    /* 解析 WiFi 状态 */
     function parseAppStatus(data) {
-      if (!data || !data.status) {
-        return;
-      }
+      if (!data || !data.status) return;
 
       const status = data.status;
 
       switch (status) {
         case 'connecting':
+          updateIndicator('connecting', '正在连接...');
           showStatus('正在尝试连接 WiFi，请稍候...', 'loading');
-          // 继续轮询
           pollTimer = setTimeout(pollWifiStatus, POLL_INTERVAL);
           break;
 
-        case 'success':
+      //   case 'success':
+      // 修改为 当拿到 IP 时才算成功，去掉 success 状态，避免误判
         case 'got_ip':
-          showStatus(`配网成功！设备已获取 IP ${data.ip ? '(' + data.ip + ')' : ''} 开启智能管家`, 'success');
+          updateIndicator('success', '已连接网络');
+          showStatus(`配网成功！设备已获取 IP ${data.ip ? '(' + data.ip + ')' : ''}`, 'success');
           stopPolling();
           submitBtn.disabled = false;
           break;
 
         case 'failed':
         case 'password_error':
+        case 'ssid_not_found': 
+          updateIndicator('error', '连接失败');
           showStatus('配网失败：密码错误或未查找到 SSID，请重试', 'error');
           stopPolling();
           submitBtn.disabled = false;
           break;
 
         default:
-          // 其他未知状态继续轮询
           pollTimer = setTimeout(pollWifiStatus, POLL_INTERVAL);
           break;
       }
     }
 
-    /**
-     * 停止轮询
-     */
+    /* 停止轮询 */
     function stopPolling() {
       if (pollTimer) {
         clearTimeout(pollTimer);
@@ -317,56 +574,64 @@
       }
     }
 
-    // ****************** 提交表格并启动配网 *******************
-
-    form.addEventListener('submit', function (e) {
+    /* 提交 WiFi 配置 */
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
 
       const ssid = ssidInput.value.trim();
       const password = passwordInput.value;
 
+      /* SSID 不能为空 */
       if (!ssid) {
         showStatus('请输入 WiFi 名称', 'error');
         return;
       }
 
-      // 禁用按钮，显示加载状态
+      /* 禁用按钮 */
       submitBtn.disabled = true;
+
+      /* 更新指示灯与状态 */
+      updateIndicator('connecting', '发送配置中...');
       showStatus('正在发送配置信息...', 'loading');
 
-      // 清除旧的定时器
+      /* 停止之前的轮询 */
       stopPolling();
 
-      // 发送配网信息 POST 请求
+      /* 发送 WiFi 配置 */
       fetch('/wifi', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ssid, password })
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ssid,
+          password
+        })
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
           showStatus('信息已发送，正在等待设备连接结果...', 'loading');
-          // 提交成功后，启动轮询获取最终状态
           pollWifiStatus();
         } else {
+          updateIndicator('error', '发送失败');
           showStatus(data.message || '配置信息发送失败', 'error');
           submitBtn.disabled = false;
         }
       })
       .catch(() => {
+        updateIndicator('error', '请求超时');
         showStatus('网络请求发送失败，请检查是否已连接设备热点', 'error');
         submitBtn.disabled = false;
       });
     });
 
-    // ****************** End *******************
-
-    // 显示信息框辅助函数
+    /* 显示状态 */
     function showStatus(msg, type) {
       statusEl.textContent = msg;
       statusEl.className = 'status ' + type;
     }
   </script>
+
 </body>
 </html>

@@ -107,6 +107,9 @@ typedef enum
 extern wifi_status_t g_wif_status;
 
 
+// 全局ip地址
+extern char ipv4_addr[16];
+
 /* -------------------------------------------------------- */
 
 
