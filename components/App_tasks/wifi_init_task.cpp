@@ -11,6 +11,10 @@
 
 #include "App_tasks.h"
 #include <stdio.h>
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+
 #include "BSP.h"
 #include "ssd1306_graphics.h"
 
@@ -27,8 +31,21 @@
     3. 在App_tasks.h文件中声明任务函数
     *********** 不要直接在本文件修改 ***********
 */
+// 全局变量：全局事件队列与组件状态
+QueueHandle_t g_wifi_init_task_event_queue = xQueueCreate(EVENT_QUEUE_LENGTH,sizeof(event_t));
+// 初始化配网状态为：空闲
+static wifi_config_status_t g_wifi_config_status = WIFI_CONFIG_STATUS_IDLE;
 
-static const char *TAG = "wifi_Init_Task";
+static const char *TAG = "Wifi_Init_Task";
+
+
+
+// 配网状态更新函数
+void update_wifi_config_status(wifi_config_status_t new_status){
+    if (g_wifi_config_status == new_status) return;   // 状态没变
+    g_wifi_config_status = new_status;   // 更新全局状态
+}
+
 
 void wifi_init_task(void *arg)
 {

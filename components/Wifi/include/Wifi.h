@@ -23,4 +23,12 @@
  */
 void wifi_Init();
 
+
+/**
+ * @brief wifi连接
+ * 
+ * @param wifi_info 传进ssid,pwd
+ */
+void wifi_connect_handler(wifi_credentials_t* wifi_info);
+
 #endif

@@ -1,4 +1,4 @@
-idf_component_register(SRCS "wifi_init_task.cpp" "test_task.cpp" "UART_Transmit.cpp" "Expressions_task.cpp" "Wi-fi_Web_manage.cpp"
+idf_component_register(SRCS "Wifi_Init_task.cpp" "test_task.cpp" "UART_Transmit.cpp" "Expressions_task.cpp" "Wi-fi_Web_manage.cpp"
                     INCLUDE_DIRS "include"
                     REQUIRES 
                         Board

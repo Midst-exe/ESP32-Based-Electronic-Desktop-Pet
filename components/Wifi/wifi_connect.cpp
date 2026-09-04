@@ -43,7 +43,7 @@ wifi_config_status_t wifi_get_status(void){
 // ****************** End ******************
 /**
  * @brief wifi连接成功handler，在成功连接时返回消息
- * 
+ * @attention 仅修改wifi_status状态
  * @param event_handler_arg Oled设备句柄
  * @param event_base 事件头名
  * @param event_id 事件id
@@ -54,6 +54,10 @@ static void wifi_handler(void* event_handler_arg,
                         int32_t event_id,
                         void* event_data){
     
+    
+    // 创建事件结构体
+    event_t evt = {};
+
     if( event_base == WIFI_EVENT ){
         switch (event_id){
 // ************************************** TODO ************************************
@@ -70,6 +74,17 @@ static void wifi_handler(void* event_handler_arg,
         case WIFI_EVENT_STA_CONNECTED: // 连接成功
             ESP_LOGI(TAG,"Wi-Fi Station connected to AP!");
             update_wifi_config_status(WIFI_CONFIG_STATUS_SUCCESS); // 配网状态：连接成功
+
+            evt = {
+                .base = ,
+                .id = ,
+                .data = 
+            }
+            // 发送事件到队列，等待 Task 消费（Timeout 设为 0，绝对不阻塞）
+            if (xQueueSend(g_wifi_init_task_event_queue, &evt, 0) != pdPASS) 
+                ESP_LOGE(TAG, "[回调函数] 队列已满，事件丢弃！");
+            else ESP_LOGI(TAG, "[回调函数] 事件已成功送入队列，回调函数退出！");
+
             break;
         case WIFI_EVENT_STA_DISCONNECTED: {// 连接失败 或者 断连
             // 获取断连原因
@@ -138,7 +153,7 @@ static void wifi_handler(void* event_handler_arg,
     }    
 }
 
-// wifi连接回调
+// wifi连接
 void wifi_connect_handler(wifi_credentials_t* wifi_info){
     // 配置 wifi
     // 配置sta成员,并写入nvs

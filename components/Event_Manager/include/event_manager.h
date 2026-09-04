@@ -19,6 +19,22 @@
 extern "C" {
 #endif
 
+// 一般队列长度
+#define EVENT_QUEUE_LENGTH 10
+
+extern QueueHandle_t g_wifi_init_task_event_queue;
+
+
+/* ---------------- 声明事件结构体 ---------------- */
+
+typedef struct {
+    esp_event_base_t base; // 事件基，如 WIFI_EVENT 或 MY_WEB_EVENT
+    int32_t id;            // 事件 ID
+    void *data;            // 附带数据
+} event_t;
+/* -------------------------------------------------------- */
+
+
 /* ---------------- 声明所有事件基 ---------------- */
 ESP_EVENT_DECLARE_BASE(WIFI_CONFIG_EVENT);  // Wi-Fi 配网相关事件基
 ESP_EVENT_DECLARE_BASE(OTA_EVENT);          // OTA 升级相关事件基
