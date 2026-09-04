@@ -65,6 +65,7 @@ static esp_err_t init_system_resources(void){
   ret = esp_event_loop_create_default();
   //初始化板载资源
 	board_Init();
+
   // 初始化wifi，并执行连接逻辑
   wifi_Init();
 

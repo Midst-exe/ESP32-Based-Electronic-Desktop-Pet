@@ -1,5 +1,5 @@
 /**
- * @file app_event.h
+ * @file event_manager.h
  * @author Midst.exe (Midst.exe@hotmail.com)
  * @brief 全局事件管理总线 以及状态
  * @version 0.1
@@ -10,8 +10,8 @@
  */
 
 
-#ifndef APP_EVENTS_H
-#define APP_EVENTS_H
+#ifndef EVENTS_MANAGER_H
+#define EVENTS_MANAGER_H
 
 #include "esp_event.h"
 
@@ -32,8 +32,15 @@ ESP_EVENT_DECLARE_BASE(SENSOR_EVENT);       // 传感器数据相关事件基
 typedef enum {
     WIFI_CONFIG_EVENT_GOT_CREDENTIALS = 0,
     WIFI_CONFIG_EVENT_WEBSERVER_INIT, // 触发webserver_init初始化事件
+    WIFI_CONFIG_EVENT_CONNECTING, // 正在连接
+    WIFI_CONFIG_EVENT_SUCCESS, // 连接成功
+    WIFI_CONFIG_EVENT_GET_IP, // 已获取ip
     WIFI_CONFIG_EVENT_PERMITED_CONNECT, // 准许连接wifi
-    WIFI_CONFIG_EVENT_FAIL,
+    WIFI_CONFIG_EVENT_PASSWORD_ERROR, // 密码错误
+    WIFI_CONFIG_EVENT_SSID_NO_FOUND, // 找不到wifi
+    WIFI_CONFIG_EVENT_DISCONNECT_OTHER_REASON, // 其他原因导致未连接
+    WIFI_CONFIG_EVENT_MAX_CONNECT_FAILED, // 多次重连失败
+    WIFI_CONFIG_EVENT_FAIL, // 配网失败
 } wifi_config_event_id_t;
 
 // OTA 事件 ID
@@ -74,41 +81,7 @@ typedef struct {
 
 /* ----------------------- 定义各状态 ----------------------- */
 
-/**
- * @brief 全局配网状态
- */
-typedef enum
-{
-    WIFI_CONFIG_IDLE = 0, // 空闲
-    WIFI_CONFIG_CONNECTING, // 正在连接
-    WIFI_CONFIG_SUCCESS, // 连接成功
-    WIFI_CONFIG_PASSWORD_ERROR, // 密码错误
-    WIFI_CONFIG_SSID_NO_FOUND, // 未找到wifi
-    WIFI_CONFIG_DISCONNECT_OTHER_REASON, // 其他原因导致未连接
-    WIFI_CONFIG_GET_IP, // 获取到IP地址
-    WIFI_CONFIG_FAILED // 配网失败
-} wifi_config_status_t;
-// 普通全局变量
-// 初始化配网状态为：空闲
-extern wifi_config_status_t g_wifi_config_status;
 
-
-/**
- * @brief 全局网络状态
- */
-typedef enum
-{
-    WIFI_CONNECTED = 0, // wifi已连接
-    WIFI_DISCONNECTED, // wifi未连接
-    WIFI_OFF // wifi未打开
-}wifi_status_t;
-// 普通全局变量
-// 初始化网络状态为：未连接
-extern wifi_status_t g_wif_status;
-
-
-// 全局ip地址
-extern char ipv4_addr[16];
 
 /* -------------------------------------------------------- */
 
@@ -133,4 +106,4 @@ extern char ipv4_addr[16];
 }
 #endif
 
-#endif // APP_EVENT_H
+#endif 

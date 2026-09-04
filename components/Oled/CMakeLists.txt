@@ -4,6 +4,4 @@ idf_component_register(SRCS "driver/ssd1306_driver.cpp" "framebuffer/ssd1306_fra
                                  "framebuffer"
                                  "graphics"   
                         REQUIRES Oled_resource 
-                                esp_wifi
-                                esp_netif
                                 esp_driver_i2c)

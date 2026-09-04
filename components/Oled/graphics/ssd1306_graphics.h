@@ -18,7 +18,7 @@
 
 /**
  * @brief 初始化OLED
- * 
+ * @attention 调用后可使用滴答延时以显示设定的欢迎词
  * @param dev ssd1306_t类型的屏幕句柄
  * @param device_address 设备地址
  * @param bus_handle 总线句柄

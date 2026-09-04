@@ -12,8 +12,8 @@
 #include "webserver.h"
 #include "esp_http_server.h"
 #include "cJSON.h"
-#include "app_events.h"
-
+#include "event_manager.h"
+#include "state_manager.h"
 #include "esp_log.h"
 /* AP 配网逻辑  AP_pw */
 const static char *TAG ="WebServer";
@@ -155,7 +155,7 @@ esp_err_t AP_post_uri_handler(httpd_req_t* req)
         return ESP_FAIL;
     }
 
-    // 触发内部连接事件
+    // 通知wifi连接
     esp_event_post(WIFI_CONFIG_EVENT,
                    WIFI_CONFIG_EVENT_PERMITED_CONNECT,
                    &wifi_info, 
@@ -174,29 +174,42 @@ esp_err_t AP_get_uri_handler(httpd_req_t* req){
 
     httpd_resp_set_type(req, "application/json");
     const char* status_str = "unknown";
-    switch (g_wifi_config_status)
+
+
+
+// ************************ TODO **************************
+  //  用回调、函数指针、事件通知等方式获取当前配网状态，而不是直接访问全局变量
+    wifi_config_status_t current_status =  wifi_manager_get_status(); // 获取当前配网状态
+
+// ************************ End **************************
+
+    switch (current_status)
     {
-        case WIFI_CONFIG_CONNECTING:  // 正在连接
+        case WIFI_CONFIG_STATUS_CONNECTING:  // 正在连接
             status_str = "connecting";
             break;
 
-        case WIFI_CONFIG_SUCCESS:  // 连接成功
+        case WIFI_CONFIG_STATUS_SUCCESS:  // 连接成功
             status_str = "success";
             break;
 
-        case WIFI_CONFIG_PASSWORD_ERROR:  // 密码错误
+        case WIFI_CONFIG_STATUS_PASSWORD_ERROR:  // 密码错误
             status_str = "password_error";
             break;
 
-        case WIFI_CONFIG_SSID_NO_FOUND: // 未找到WLAN
+        case WIFI_CONFIG_STATUS_SSID_NO_FOUND: // 未找到WLAN
             status_str = "ssid_not_found";
             break;
 
-        case WIFI_CONFIG_FAILED:  // 配置失败
+        case WIFI_CONFIG_STATUS_FAILED:  // 配置失败
             status_str = "failed";
             break;
 
-        case WIFI_CONFIG_GET_IP:  // 获取到ip
+        case WIFI_CONFIG_STATUS_MAX_CONNECT_FAILED:  // 多次重连失败
+            status_str = "max_connect_failed";
+            break;
+
+        case WIFI_CONFIG_STATUS_GET_IP:  // 获取到ip
             status_str = "got_ip";
             break;
 
@@ -213,7 +226,7 @@ esp_err_t AP_get_uri_handler(httpd_req_t* req){
         status_str
     );
     // 如果获取到IP，则追加ip地址
-    if(g_wifi_config_status == WIFI_CONFIG_GET_IP)
+    if(current_status == WIFI_CONFIG_STATUS_GET_IP)
         snprintf(
         response + strlen(response) - 1,// 起始地址加偏移量
         sizeof(response) - strlen(response), // 全部的地址空间
@@ -295,4 +308,18 @@ void http_server_handler(void* event_handler_arg,
             break;
         }
     }
+}
+
+
+void httpd_server_event_init(){
+        // 注册WIFI_CONFIG_EVENT所有事件，对应回调函数http_server_handler，从而调用webserver_init()
+    esp_err_t ret = (esp_event_handler_instance_register(
+                            WIFI_CONFIG_EVENT,
+                            ESP_EVENT_ANY_ID,
+                            &http_server_handler,
+                            NULL,
+                            NULL
+                    )
+    );
+    if(ret != ESP_OK) ESP_LOGE(TAG,"WebServer事件初始动作失败!");
 }

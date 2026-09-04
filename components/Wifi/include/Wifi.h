@@ -23,5 +23,4 @@
  */
 void wifi_Init();
 
-
 #endif

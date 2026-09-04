@@ -1,7 +1,8 @@
-idf_component_register(SRCS "wifi_connect.cpp"
-                       INCLUDE_DIRS include
+
+idf_component_register(SRCS "wifi_connect.cpp" "wifi_state.cpp"
+                       INCLUDE_DIRS "include"
+                       PRIV_INCLUDE_DIRS "private"
                        REQUIRES esp_wifi
-                                esp_netif
-                                WebServer
-                                App_events
-                       )
+                              esp_event
+                             State_Manager
+                             Event_Manager)

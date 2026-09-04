@@ -494,7 +494,10 @@
     const submitBtn = document.getElementById('submitBtn');
 
     let pollTimer = null;
+    let connectTimeoutTimer = null;
+
     const POLL_INTERVAL = 2000;
+    const CONNECT_TIMEOUT = 30000;
 
     /* 显示 / 隐藏密码 */
     togglePwd.addEventListener('click', function() {
@@ -548,18 +551,27 @@
           updateIndicator('success', '已连接网络');
           showStatus(`配网成功！设备已获取 IP ${data.ip ? '(' + data.ip + ')' : ''}`, 'success');
           stopPolling();
+          stopConnectTimeout();
           submitBtn.disabled = false;
           break;
 
+        case 'max_connect_failed':
+          updateIndicator('error', '重连多次失败');
+          showStatus('配网失败：设备尝试连接 WiFi 超过最大次数，请检查 WiFi 名称、密码或信号后重启设备','error');
+          stopPolling();
+          stopConnectTimeout();
+          submitBtn.disabled = false;
+          break;
+        
         case 'failed':
         case 'password_error':
-        case 'ssid_not_found': 
+        case 'ssid_not_found':
           updateIndicator('error', '连接失败');
           showStatus('配网失败：密码错误或未查找到 SSID，请重试', 'error');
           stopPolling();
+          stopConnectTimeout();
           submitBtn.disabled = false;
           break;
-
         default:
           pollTimer = setTimeout(pollWifiStatus, POLL_INTERVAL);
           break;
@@ -573,6 +585,14 @@
         pollTimer = null;
       }
     }
+
+    // 超时释放链接按钮
+    function stopConnectTimeout() {
+      if (connectTimeoutTimer) {
+        clearTimeout(connectTimeoutTimer);
+        connectTimeoutTimer = null;
+      }
+    } 
 
     /* 提交 WiFi 配置 */
     form.addEventListener('submit', function(e) {
@@ -612,8 +632,19 @@
       .then(data => {
         if (data.success) {
           showStatus('信息已发送，正在等待设备连接结果...', 'loading');
+        
+          connectTimeoutTimer = setTimeout(() => {
+            stopPolling();
+          
+            updateIndicator('error', '连接超时');
+            showStatus('配网超时，请检查 WiFi 名称、密码或信号后重试', 'error');
+          
+            submitBtn.disabled = false;
+            connectTimeoutTimer = null;
+          }, CONNECT_TIMEOUT);
+        
           pollWifiStatus();
-        } else {
+        }else {
           updateIndicator('error', '发送失败');
           showStatus(data.message || '配置信息发送失败', 'error');
           submitBtn.disabled = false;
