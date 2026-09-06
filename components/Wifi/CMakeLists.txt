@@ -3,5 +3,5 @@ idf_component_register(SRCS "wifi_connect.cpp"
                        REQUIRES esp_wifi
                                 esp_netif
                                 WebServer
-                                App_events
+                                Event_Manager
                        )

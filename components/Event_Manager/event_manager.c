@@ -1,5 +1,5 @@
 
-#include "app_events.h"
+#include "event_manager.h"
 
 // 一次性把所有的事件基内存分配好
 ESP_EVENT_DEFINE_BASE(WIFI_CONFIG_EVENT);

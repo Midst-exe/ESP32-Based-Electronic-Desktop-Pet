@@ -15,21 +15,24 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 
-#include "webserver.h"
-#include "app_events.h"
+// #include "webserver.h"
+#include "event_manager.h"
 
-
+// 配置AP的SSID和PWD
+#define ON_AP_PASSWARD 0 // AP无密码模式开关
 
 #define AP_WIFI_SSID "LTF_exe"
-#define AP_WIFI_PASSWORD ""
-// #define AP_WIFI_PASSWORD "123456789"
+#ifdef ON_AP_PASSWARD 0
+    #define AP_WIFI_PASSWORD ""
+#else
+    #define AP_WIFI_PASSWORD "123456789"
+#endif
 
 
+// 配置STA的SSID和PWD   默认STA
 #define STA_WIFI_SSID "STA_wifi_ssid"
 #define STA_WIFI_PASSWORD "password"
 
-
-#define ON_AP_PASSWARD 0 // AP无密码模式开关
 
 static uint8_t reconnect_times = 0; // 重连次数重置
 #define MAX_RECONNECT_TIMES 3  // 最大重连次数

@@ -1,5 +1,5 @@
 /**
- * @file app_event.h
+ * @file event_manager.h
  * @author Midst.exe (Midst.exe@hotmail.com)
  * @brief 全局事件管理总线 以及状态
  * @version 0.1
@@ -10,8 +10,8 @@
  */
 
 
-#ifndef APP_EVENTS_H
-#define APP_EVENTS_H
+#ifndef EVENT_MANAGER_H
+#define EVENT_MANAGER_H
 
 #include "esp_event.h"
 
@@ -114,23 +114,8 @@ extern char ipv4_addr[16];
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif // APP_EVENT_H
+#endif 
