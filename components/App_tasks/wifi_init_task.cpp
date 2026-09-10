@@ -31,6 +31,9 @@
     3. 在App_tasks.h文件中声明任务函数
     *********** 不要直接在本文件修改 ***********
 */
+
+
+
 // 全局变量：全局事件队列与组件状态
 QueueHandle_t g_wifi_init_task_event_queue = xQueueCreate(EVENT_QUEUE_LENGTH,sizeof(event_t));
 // 初始化配网状态为：空闲
