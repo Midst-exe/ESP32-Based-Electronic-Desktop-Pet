@@ -494,7 +494,7 @@
     const submitBtn = document.getElementById('submitBtn');
 
     let pollTimer = null;
-    const POLL_INTERVAL = 2000;
+    const POLL_INTERVAL = 5000;
 
     /* 显示 / 隐藏密码 */
     togglePwd.addEventListener('click', function() {
@@ -552,8 +552,6 @@
           break;
 
         case 'failed':
-        case 'password_error':
-        case 'ssid_not_found': 
           updateIndicator('error', '连接失败');
           showStatus('配网失败：密码错误或未查找到 SSID，请重试', 'error');
           stopPolling();

@@ -9,6 +9,10 @@ extern const uint8_t index_html_end[]   asm("_binary_index_html_end");
 
 const size_t index_html_size = (index_html_end - index_html_start);
 
+/**
+ * @brief 初始化webserver
+ */
+void https_server_Init();
 
 /**
  * @brief web服务器的回调函数

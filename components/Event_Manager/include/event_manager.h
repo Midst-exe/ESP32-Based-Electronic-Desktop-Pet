@@ -31,9 +31,17 @@ ESP_EVENT_DECLARE_BASE(SENSOR_EVENT);       // 传感器数据相关事件基
 // 配网事件 ID
 typedef enum {
     WIFI_CONFIG_EVENT_GOT_CREDENTIALS = 0,
-    WIFI_CONFIG_EVENT_WEBSERVER_INIT, // 触发webserver_init初始化事件
+    WIFI_CONFIG_EVENT_STATUS_CHANGED_REQUIRE, // 配网状态改变请求  只能在wifi组件中调用！
+    WIFI_CONFIG_EVENT_STATUS_CHANGED, // 配网状态改变通知  只能在state_manager组件中调用！
     WIFI_CONFIG_EVENT_PERMITED_CONNECT, // 准许连接wifi
-    WIFI_CONFIG_EVENT_FAIL,
+    WIFI_CONFIG_EVENT_CONNECTING,  // 正在连接wifi
+    WIFI_CONFIG_EVENT_SUCCESS,  // 连接成功
+    WIFI_CONFIG_EVENT_PASSWORD_ERROR,  // 密码错误
+    WIFI_CONFIG_EVENT_SSID_NO_FOUND,  // 未找到WLAN
+    WIFI_CONFIG_EVENT_MAX_CONNECT_FAILED,  // 连接失败次数过多
+    WIFI_CONFIG_EVENT_DISCONNECT_OTHER_REASON,  // 其他原因导致未连接
+    WIFI_CONFIG_EVENT_GET_IP,  // 获取到IP地址
+    WIFI_CONFIG_EVENT_FAIL,  // 配网失败
 } wifi_config_event_id_t;
 
 // OTA 事件 ID
@@ -69,53 +77,15 @@ typedef struct {
 } ota_progress_t;
 
 /* -------------------------------------------------------- */
-
-
-
-/* ----------------------- 定义各状态 ----------------------- */
-
-/**
- * @brief 全局配网状态
- */
-typedef enum
-{
-    WIFI_CONFIG_IDLE = 0, // 空闲
-    WIFI_CONFIG_CONNECTING, // 正在连接
-    WIFI_CONFIG_SUCCESS, // 连接成功
-    WIFI_CONFIG_PASSWORD_ERROR, // 密码错误
-    WIFI_CONFIG_SSID_NO_FOUND, // 未找到wifi
-    WIFI_CONFIG_DISCONNECT_OTHER_REASON, // 其他原因导致未连接
-    WIFI_CONFIG_GET_IP, // 获取到IP地址
-    WIFI_CONFIG_FAILED // 配网失败
-} wifi_config_status_t;
-// 普通全局变量
-// 初始化配网状态为：空闲
-extern wifi_config_status_t g_wifi_config_status;
-
-
-/**
- * @brief 全局网络状态
- */
-typedef enum
-{
-    WIFI_CONNECTED = 0, // wifi已连接
-    WIFI_DISCONNECTED, // wifi未连接
-    WIFI_OFF // wifi未打开
-}wifi_status_t;
-// 普通全局变量
-// 初始化网络状态为：未连接
-extern wifi_status_t g_wif_status;
-
-
-// 全局ip地址
-extern char ipv4_addr[16];
-
-/* -------------------------------------------------------- */
-
-
-
 #ifdef __cplusplus
 }
 #endif
+
+
+/**
+ * @brief 初始化状态管理器，注册事件监听器
+ * 
+ */
+void state_manager_init();
 
 #endif 

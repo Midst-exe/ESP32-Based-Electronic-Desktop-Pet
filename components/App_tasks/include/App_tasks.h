@@ -30,5 +30,12 @@ void UART_Transmit_task(void *arg);
  */
 void Expressions_task(void *arg);
 
+/**
+ * @brief AP配网初始化任务
+ * 
+ * @param arg 
+ */
+void Wi_fi_init_task(void *arg);
+
 
 #endif

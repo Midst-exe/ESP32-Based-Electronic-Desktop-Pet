@@ -40,7 +40,7 @@ void UART_Init(){
     if( uart_is_driver_installed(UART_NUM_0)==false )  
         ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, uart_buffer_size, 0, 0, NULL, 0));
 
-    ESP_LOGI(TAG,"板级资源初始化完成!");
+    ESP_LOGI(TAG,"资源初始化完成!");
     
 }
 

@@ -4,4 +4,5 @@ idf_component_register(SRCS "wifi_connect.cpp"
                                 esp_netif
                                 WebServer
                                 Event_Manager
+                                State_Manager
                        )

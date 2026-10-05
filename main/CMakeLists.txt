@@ -4,4 +4,6 @@ idf_component_register(SRCS "main.cpp"
                         App_tasks
                         Board
                         Wifi
+                        State_Manager
+                        Event_Manager
                     )

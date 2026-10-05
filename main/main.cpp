@@ -6,6 +6,9 @@
 #include "esp_event.h"
 #include "App_tasks.h"
 
+#include "state_manager.h"
+#include "event_manager.h"
+
 #include "BSP.h"
 #include "Hardware_Pin.h"
 #include "Wifi.h"
@@ -65,7 +68,7 @@ static esp_err_t init_system_resources(void){
   ret = esp_event_loop_create_default();
   //初始化板载资源
 	board_Init();
-
+  state_manager_init();  // 初始化状态管理器，注册事件监听器
 
   // dpp_enrollee_init();
 
@@ -82,8 +85,8 @@ extern "C" void app_main(void)
     }
 
     xTaskCreate(
-        UART_Transmit_task,  //修改
-        "UART_Transmit_task",  //修改
+        Wi_fi_init_task,  //修改
+        "Wi_fi_init_task",  //修改
         4096,
         NULL,
         5,
