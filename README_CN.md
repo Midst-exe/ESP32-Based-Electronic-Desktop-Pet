@@ -1,10 +1,10 @@
 [English](README.md) | [简体中文](README_CN.md)
-
+# 个人项目，恳请指正！🤝
 # 项目标题
 
 <h1 align="center">🐾 基于 ESP32-S3 的电子桌面宠物</h1>
 <p align="center">
-  <b>ESP32-S3 Electronic Desktop Pet</b> · 毕业设计作品<br>
+  <b>ESP32-S3 Electronic Desktop Pet</b> · 个人设计作品<br>
   SSD1306 表情引擎 · I2S 语音流 · WebSocket 传输 · 事件 / 状态驱动固件
 </p>
 
@@ -146,20 +146,6 @@ idf.py -p <PORT> flash monitor
 3. 修改文件顶部的 Wi-Fi 与 WebSocket 服务器地址为你的环境；
 4. 编译烧录。
 
-> 🔒 原型中硬编码了 Wi-Fi 与服务器地址，**请勿提交真实凭据**，建议改为配网 / 本地配置文件。
-
-## ✅ 验证结果
-
-> 本部分需补充真实素材（截图 / 照片 / 串口日志）。下表为模板，替换即可。
-
-| 验证项 | 结果 | 证据 |
-| --- | --- | --- |
-| 固件可构建 | ✅ | `idf.py build` 成功 |
-| OLED 表情显示 | ⏳ 待补充 | 替换为 `docs/images/oled.jpg` |
-| Wi-Fi 配网 | ⏳ 待补充 | 替换为串口日志 |
-| 麦克风采集 | ⏳ 待验证 | — |
-| 电机动作 | ⏳ 待验证 | — |
-
 **验证清单（Checklist）**
 
 1. [ ] `idf.py build` 构建成功；
@@ -168,7 +154,7 @@ idf.py -p <PORT> flash monitor
 4. [ ] Wi-Fi 配网路径可用、状态上报正确；
 5. [ ] 电机控制正常（**先空载测试**）。
 
-**串口日志模板**（示例，替换为你的真实输出）：
+**串口日志模板**：
 
 ```text
 I (123) MAIN: 系统初始化成功
@@ -187,7 +173,7 @@ I (345) WIFI: connected, IP: 192.168.x.x
 
 ## 📄 License
 
-尚未指定许可证。在允许他人复用之前，请添加 `LICENSE` 文件。
+尚未指定许可证。
 
 ## 🙏 参考与致谢
 
