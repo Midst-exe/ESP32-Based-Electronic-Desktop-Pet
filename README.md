@@ -1,3 +1,7 @@
+[English](README.md) | [简体中文](README_CN.md)
+
+# Project Title
+
 # ESP32-Based Electronic Desktop Pet
 
 > An ESP32-S3 electronic desktop pet built with ESP-IDF. It combines an SSD1306 OLED expression engine, a small motor-control interface, Wi-Fi provisioning, and an event/state-driven firmware structure.
